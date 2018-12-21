@@ -6,6 +6,7 @@ import { connect } from "react-redux"
 import { Provider } from "react-redux"
 import store from "../Redux/Store"
 import { saveUserData } from "../Redux/epic"
+import { saveFBID } from "../Redux/Actions/Action"
 
 class Login extends React.Component {
     constructor(props){
@@ -29,13 +30,11 @@ class Login extends React.Component {
             // Get the user's name using Facebook's Graph API
             const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`)
             .then( res => res.json())
-            .then( data => this.props.saveUserData(data) )
-            // {
-            //   firebase.database().ref(`usersData/${data.id}`).set({
-            //     facebook_id : data.id,
-            //     fb_Name : data.name
-            // })
-            // }
+            .then( data => { 
+              this.props.saveFBID(data.id)
+              this.props.saveUserData(data) 
+             
+            })
             
             this.props.navigation.navigate('Dashboard')
             
@@ -61,7 +60,6 @@ class Login extends React.Component {
               onPress={this.logIn}
               title="login with facebook"
               color="#841584"
-              accessibilityLabel="Learn more about this purple button"
             />
             </View>
           
@@ -86,7 +84,8 @@ class Login extends React.Component {
 
     const mapDispatchToProps = dispatch => {
       return {
-        saveUserData : (data) => dispatch(saveUserData(data))
+        saveUserData : (data) => dispatch(saveUserData(data)),
+        saveFBID : id => dispatch(saveFBID(id))
       }
     }
     
